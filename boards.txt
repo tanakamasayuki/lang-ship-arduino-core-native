@@ -1,0 +1,10 @@
+m5stack_core.name=M5Stack Core (SDL2 Native)
+
+m5stack_core.build.core=native
+m5stack_core.build.board=LANGSHIP_M5STACK_CORE
+m5stack_core.build.variant=m5stack_core
+m5stack_core.build.f_cpu=240000000L
+m5stack_core.build.extra_flags=-DLANGSHIP_NATIVE=1 -DM5STACK_CORE=1
+m5stack_core.build.warn_level=default
+m5stack_core.build.exec_ext=.exe
+

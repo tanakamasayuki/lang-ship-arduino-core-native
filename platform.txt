@@ -1,0 +1,87 @@
+name=lang-ship SDL2 Native
+version=1.0.0
+author=lang-ship
+maintainer=lang-ship
+sentence=Run M5Stack sketches inside a native SDL2 runtime.
+paragraph=Experimental Arduino core for executing M5Stack sketches on desktop platforms via SDL2.
+category=Contributed
+url=https://github.com/tanakamasayuki/lang-ship-arduino-core-native
+architecture=native
+
+build.exec_ext=
+build.warn_level=default
+build.sdl_ldflags=
+
+# ///////////////////////////////////////////////////////////////
+# Toolchain configuration
+# ///////////////////////////////////////////////////////////////
+
+# Allow users to override compiler path via --build-property compiler.path=...
+compiler.path=
+compiler.cmd.path={compiler.path}
+compiler.exec.ext={build.exec_ext}
+
+compiler.c.cmd=gcc
+compiler.c.flags=-c -g -O2 -pipe -Wall -Wextra -ffunction-sections -fdata-sections
+compiler.c.extra_flags=
+
+compiler.cpp.cmd=g++
+compiler.cpp.flags=-c -g -O2 -pipe -Wall -Wextra -ffunction-sections -fdata-sections -std=gnu++17
+compiler.cpp.extra_flags=
+
+compiler.S.cmd=gcc
+compiler.S.flags=-c -g -x assembler-with-cpp -Wall -Wextra
+compiler.S.extra_flags=
+
+compiler.ar.cmd=ar
+compiler.ar.flags=rcs
+compiler.ar.extra_flags=
+
+compiler.elf.cmd={compiler.cmd.path}{compiler.cpp.cmd}
+compiler.elf.flags=-g -O2 -pipe -Wl,--gc-sections
+compiler.elf.extra_ldflags=
+
+compiler.objcopy.cmd=objcopy
+compiler.objcopy.eep.flags=-O ihex -j .eeprom --set-section-flags=.eeprom=alloc,load --no-change-warnings --change-section-lma .eeprom=0
+compiler.objcopy.hex.cmd=objcopy
+compiler.objcopy.hex.flags=-O ihex -R .eeprom
+compiler.size.cmd=size
+compiler.size.flags=
+
+compiler.includes=-I{build.path} -I{build.path}/sketch -I{build.path}/pch -I{build.core.path} -I{build.variant.path}
+
+compiler.warning_flags.none=
+compiler.warning_flags.default=-Wall -Wextra
+compiler.warning_flags.more=-Wall -Wextra -Wconversion
+compiler.warning_flags.all=-Wall -Wextra -Wconversion -Wpedantic
+
+# ///////////////////////////////////////////////////////////////
+# Build recipes
+# ///////////////////////////////////////////////////////////////
+
+recipe.c.o.pattern="{compiler.cmd.path}{compiler.c.cmd}" {compiler.c.flags} {compiler.warning_flags.{build.warn_level}} {compiler.c.extra_flags} {build.extra_flags} {compiler.includes} {includes} "{source_file}" -o "{object_file}"
+recipe.cpp.o.pattern="{compiler.cmd.path}{compiler.cpp.cmd}" {compiler.cpp.flags} {compiler.warning_flags.{build.warn_level}} {compiler.cpp.extra_flags} {build.extra_flags} {compiler.includes} {includes} "{source_file}" -o "{object_file}"
+recipe.S.o.pattern="{compiler.cmd.path}{compiler.S.cmd}" {compiler.S.flags} {compiler.warning_flags.{build.warn_level}} {compiler.S.extra_flags} {build.extra_flags} {compiler.includes} {includes} "{source_file}" -o "{object_file}"
+
+recipe.ar.pattern="{compiler.cmd.path}{compiler.ar.cmd}" {compiler.ar.flags} {compiler.ar.extra_flags} "{archive_file_path}" "{object_file}"
+
+recipe.c.combine.pattern="{compiler.elf.cmd}" {compiler.elf.flags} {compiler.elf.extra_ldflags} {compiler.cpp.extra_flags} {build.extra_flags} -o "{build.path}/{build.project_name}{compiler.exec.ext}" {object_files} {compiler.libraries.ldflags} {build.ld_flags}
+
+compiler.libraries.ldflags=-lSDL2 {build.sdl_ldflags}
+
+recipe.objcopy.hex.pattern=
+recipe.objcopy.eep.pattern=
+recipe.size.pattern="{compiler.cmd.path}{compiler.size.cmd}" {compiler.size.flags} "{build.path}/{build.project_name}{compiler.exec.ext}"
+
+# ///////////////////////////////////////////////////////////////
+# Upload helpers
+# ///////////////////////////////////////////////////////////////
+
+tools.lang-ship-run.cmd=
+tools.lang-ship-run.path=
+tools.lang-ship-run.upload.params.verbose=
+tools.lang-ship-run.upload.params.quiet=
+tools.lang-ship-run.upload.pattern="{build.path}/{build.project_name}{compiler.exec.ext}"
+
+runtime.tools.lang-ship-run.path=
+
