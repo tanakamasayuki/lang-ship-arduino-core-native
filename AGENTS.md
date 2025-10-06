@@ -23,3 +23,4 @@
 ## Communication
 - Keep documentation and code comments in English.
 - README is English-first, with `README.ja.md` offering a Japanese translation maintained alongside.
+

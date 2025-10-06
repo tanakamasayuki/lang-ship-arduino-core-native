@@ -59,3 +59,5 @@ Issue や Pull Request を歓迎します。`README.md` と `README.ja.md` の�
 ## ライセンス
 MIT License に基づき公開しています。詳細は `LICENSE` を参照してください。
 
+
+
